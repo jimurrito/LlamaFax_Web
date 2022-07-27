@@ -1,0 +1,25 @@
+# Docker Container for Rating UI Llamfax Service
+# Alpine doesnt properly support the modules needed for Streamlit
+FROM ubuntu:latest
+
+ARG DBHOST="LFXMongo"
+ENV DBHOST=${DBHOST}
+ENV BUILDVER="1.07.2122"
+
+USER root
+RUN mkdir -p /llamafax/lib
+
+# Imports App Dependancies
+ADD app/Home.py /llamafax/.
+ADD app/pages/. /llamafax/pages/.
+ADD app/lib/. /llamafax/lib/.
+ADD app/assets/. /llamafax/assets/.
+ADD app/.streamlit/ /llamafax/.streamlit/
+
+# Update and install Pip packages
+RUN apt-get update -y && apt-get install python3-pip -y && pip3 install --upgrade pip
+RUN pip install pymongo streamlit
+
+WORKDIR /llamafax
+
+CMD streamlit run Home.py

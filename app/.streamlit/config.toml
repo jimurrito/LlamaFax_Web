@@ -1,0 +1,9 @@
+[server]
+port=8051
+#headless=true 
+enableCORS=false
+enableXsrfProtection=false
+enableWebsocketCompression=false
+[browser] # This ip and port will show in command prompt
+#serverAddress = "0.0.0.0"
+serverPort = 8051
