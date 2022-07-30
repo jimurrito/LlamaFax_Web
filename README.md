@@ -14,7 +14,8 @@ Web-Interface used to manually rate the quality of generated sets, provided by t
 #### Main UI
 This UI is what is used to rate the generated sets
 - Allows for users to see a set of generations, and rate them
-- Rating is done by either providing the Index of the good statements or providing 'all' or 'none', to apply the effect to all statements in the set.
+- ~~Rating is done by either providing the Index of the good statements or providing 'all' or 'none', to apply the effect to all statements in the set.~~
+- Ratings are done by selecting the check box or the statment, and hitting submit. Option to select 'None' is a static check box at the bottom 
 - This UI shows the user's UPN, and current score.
 - Messages are saved in cache, until submitted
 - users can submit bug reports for issues or feedback

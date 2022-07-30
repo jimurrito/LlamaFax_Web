@@ -6,7 +6,7 @@ import os
 
 # Site State Configuration
 st.set_page_config(
-    page_title="Account",
+    page_title="🦙 Account",
     page_icon="🦙",
     initial_sidebar_state="expanded",
     menu_items={
@@ -26,16 +26,6 @@ UAuthColNam = "userAuth"
 KeyColNam = "alphaKey"
 BugRepColNam = "repBugs"
 SupportColNam = "support"
-
-
-# > Alpha key input
-# > Alpha key checked against DB
-# > Signup prompt if valid key
-# >
-#
-#  e7b26167-f4c4-4d8a-b455-832553ccba74
-#  0aac8fe5-2f33-4e71-82de-463b6a1d9dbf
-
 
 # Alpha Key Collection
 keyDB = MongoDB(KeyColNam, DBHost, Indexes=["code"])

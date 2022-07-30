@@ -2,7 +2,6 @@ try:
     from lib.MongoDB import MongoDB, UAuth
 except:
     from MongoDB import MongoDB, UAuth
-from operator import contains
 import pymongo
 import streamlit as st
 import logging
@@ -11,8 +10,8 @@ import logging
 def getPhrases(Message):
     out = []
     for Phrase in Message["render"]:
-        out.append(f"{Phrase}")  # (f"    [{ct}] - {Phrase}")
-    return out  # "\n".join(out)
+        out.append(f"{Phrase}")
+    return out
 
 
 def rateFaxNew(opts: list, message: list, Mod="Good"):
@@ -28,13 +27,7 @@ def rateFaxNew(opts: list, message: list, Mod="Good"):
     out = {}
 
     # If all is provided
-    if str(opts).find("all") != -1:
-        for phrase in message:
-            out.update({phrase: Mod})
-        return out
-
-    # If all is provided
-    if str(opts).find("none") != -1:
+    if str(opts).lower().find("none") != -1:
         for phrase in message:
             out.update({phrase: "Bad"})
         return out
@@ -50,10 +43,6 @@ def rateFaxNew(opts: list, message: list, Mod="Good"):
     return out
 
 
-def clearInput():
-    st.session_state["Uput"] = ""
-
-
 def progBar(DBObj: MongoDB, target=5000):
     cCT = DBObj.count()
     prog = cCT / target
@@ -62,12 +51,6 @@ def progBar(DBObj: MongoDB, target=5000):
 
 
 def ScoreBoard(AuthDBObj: UAuth, Limit: int = 10):
-    # <Might not be needed> Get the sum of all points in DB ($Total)
-    # get first 5 highest scoring users
-    #   > Show Rank, Score, and UserName
-
-    # Convert to using a form, where you can use the submit button to refresh the table.
-    # table looks ugly, need to find better layout!!
     with st.container():
         with st.form("ScoreBoard", clear_on_submit=True):
             ct = 1
@@ -115,6 +98,16 @@ def STMessagePeristence(RendQ):
     return message
 
 
+def STOptionPeristence(out):
+    try:
+        temp = st.session_state["Draw"]
+        if out != temp:
+            st.session_state["Draw"] = out
+    except:
+        st.session_state["Draw"] = out
+    return out
+
+
 def STLogin(Image: str = "assets/lfx_profile_pic.jpg"):
     Popout = st.empty()  # AuthScreen Container Object
     with Popout.container():
@@ -147,24 +140,24 @@ def STsidebar(UserAuthObj, UAuthDB, Image: str = "assets/lfx_profile_pic.jpg"):
 
 def STdrawOptions(message):
     with st.container():
-        st.table(getPhrases(message))
-        st.write("Type 'all' or 'none', if all statments fit that assignment.")
-        st.write("Enter multiple values seperated with a space.")
-    return str(
-        st.text_input("Examples: (0 1 2 ...) ; (all) ; (none) ", max_chars=20)
-    ).split()
+        Renders = message["render"]
+
+        Opt = []
+        ct = 0
+        for Render in Renders:
+            if st.checkbox(f"{Render}"):
+                Opt.append(str(ct))
+            ct += 1
+        New = STOptionPeristence(Opt)
+        NONe = st.checkbox("None")
+
+        if NONe:
+            return "none"
+
+    return New
 
 
 def STClearOptions(EmptyObj, Opts):
     if Opts == []:
         return
     EmptyObj.empty()
-
-
-def main():
-
-    print(sanitizeInput("yes"))
-
-
-if __name__ == "__main__":
-    main()

@@ -14,7 +14,7 @@ import os
 
 # Site State Configuration
 st.set_page_config(
-    page_title="LlamaFax",
+    page_title="🦙 LlamaFax",
     page_icon="🦙",
     initial_sidebar_state="expanded",
     menu_items={
@@ -27,6 +27,7 @@ st.set_page_config(
 # [Vars from Enviroment]
 # DB Host
 DBHost = os.getenv("DBHOST", "LFXMongo")
+# DBHost = "10.4.18.2"
 # Build Version #
 buildV = os.getenv("BUILDVER", "0.0")
 
@@ -93,7 +94,9 @@ if Upn and Pwd:
                 "Application is in Private Preview. If an error occurs, please submit a bug report, and refresh your screen. Thanks in Advance!"
             )
 
-            with st.form("Freddy the form",clear_on_submit=True):  # clear_on_submit=True
+            with st.form(
+                "Freddy the form", clear_on_submit=True
+            ):  # clear_on_submit=True
                 progBar(ArchiveDB)
                 st.header("LlamaFax Corpus Generator")
                 st.write("Input the ID of the statments that are coherent and/or funny")
@@ -105,15 +108,11 @@ if Upn and Pwd:
                     logging.info(f"[{auth['upn']}] User Input Received")
                     logging.debug(f"[{auth['upn']}] : {Opts}")
 
-                    Buttontxt = "Confirm"
-                    st.info("Please select 'Confirm' to coninue")
+                    Buttontxt = "Next"
+                    st.info("Please select 'Next' to coninue")
                     # Binds ratings with user input, outputs dict with statments and ratings.
                     # replaces the list of unranked statments
                     message["render"] = rateFaxNew(Opts, message["render"])
-
-                    logging.debug(f"[{auth['upn']}] : {message}")
-
-                    logging.info(f"[{auth['upn']}] Pushing to MongoDB")
 
                     # Add user mark on Archive message
                     message.update({"user": auth["upn"]})
@@ -121,11 +120,9 @@ if Upn and Pwd:
                     # [Pushes]
                     # Push to Archive DB
                     # Archival Data of ALL renders, and components.
+                    logging.debug(f"[{auth['upn']}] : {message}")
+                    logging.info(f"[{auth['upn']}] Pushing to MongoDB")
                     ArchiveDB.push(message)
-
-                    # Push to Corpus DB
-                    # Data used to train NLN used to rate future renders automatically
-                    # CorpusDB.push(message["render"])
 
                     # Deletes from Render Queue
                     st.session_state["messageState"] = False
